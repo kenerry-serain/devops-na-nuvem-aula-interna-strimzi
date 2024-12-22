@@ -1,21 +1,39 @@
 apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaNodePool
 metadata:
-  name: dual-role
+  name: controller
   labels:
-    strimzi.io/cluster: my-cluster
+    strimzi.io/cluster: devops-na-nuvem-kafka-cluster
 spec:
   replicas: 1
   roles:
     - controller
+  storage:
+    type: jbod
+    volumes:
+      - id: 0
+        type: persistent-claim
+        class: gp2
+        size: 10Gi
+        deleteClaim: false
+        kraftMetadata: shared
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaNodePool
+metadata:
+  name: broker
+  labels:
+    strimzi.io/cluster: devops-na-nuvem-kafka-cluster
+spec:
+  replicas: 1
+  roles:
     - broker
   storage:
     type: jbod
     volumes:
       - id: 0
         type: persistent-claim
-        size: 100Gi
-        # Adicional
         class: gp2
+        size: 10Gi
         deleteClaim: false
         kraftMetadata: shared
